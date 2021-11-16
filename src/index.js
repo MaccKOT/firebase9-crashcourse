@@ -1,6 +1,13 @@
 import { firebaseConfig } from '../firebase';
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, getDocs } from 'firebase/firestore';
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  addDoc,
+  deleteDoc,
+  doc,
+} from 'firebase/firestore';
 
 // Initialize Firebase
 initializeApp(firebaseConfig);
@@ -32,3 +39,30 @@ getDocs(colRef)
   });
 
 console.log('hello from index.js');
+
+// adding docs
+const addBookForm = document.querySelector('.add');
+addBookForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  addDoc(colRef, {
+    title: addBookForm.title.value,
+    author: addBookForm.author.value,
+  }).then(() => {
+    // This is async function!
+    addBookForm.reset();
+  });
+});
+
+// deleting docs
+const deleteBookForm = document.querySelector('.delete');
+deleteBookForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  // reference to document with id
+  const docRef = doc(db, 'books', deleteBookForm.id.value);
+
+  deleteDoc(docRef).then(() => {
+    deleteBookForm.reset();
+  });
+});
