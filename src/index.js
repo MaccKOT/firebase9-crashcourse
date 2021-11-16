@@ -4,6 +4,7 @@ import {
   getFirestore,
   collection,
   getDocs,
+  onSnapshot,
   addDoc,
   deleteDoc,
   doc,
@@ -18,25 +19,38 @@ const db = getFirestore();
 // collection ref
 const colRef = collection(db, 'books');
 
-// get collection data
-getDocs(colRef)
-  .then((snapshot) => {
-    // console.log(snapshot.docs);
+// get collection data (simple variant)
+// getDocs(colRef)
+//   .then((snapshot) => {
+//     // console.log(snapshot.docs);
 
-    //extract data from response
-    let books = [];
-    snapshot.docs.forEach((doc) => {
-      books.push({
-        ...doc.data(),
-        id: doc.id,
-      });
+//     //extract data from response
+//     let books = [];
+//     snapshot.docs.forEach((doc) => {
+//       books.push({
+//         ...doc.data(),
+//         id: doc.id,
+//       });
+//     });
+
+//     console.log(books);
+//   })
+//   .catch((err) => {
+//     console.log(err.message);
+//   });
+
+// real time colletion data (works atomatically after adding or deleting books)
+onSnapshot(colRef, (snapshot) => {
+  let books = [];
+  snapshot.docs.forEach((doc) => {
+    books.push({
+      ...doc.data(),
+      id: doc.id,
     });
-
-    console.log(books);
-  })
-  .catch((err) => {
-    console.log(err.message);
   });
+
+  console.log(books);
+});
 
 console.log('hello from index.js');
 
