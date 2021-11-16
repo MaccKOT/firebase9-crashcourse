@@ -24,11 +24,7 @@ const db = getFirestore();
 const colRef = collection(db, 'books');
 
 // queries
-const q = query(
-  colRef,
-  where('author', '==', 'Patrick Rothfuss'),
-  orderBy('createdAt')
-);
+const q = query(colRef, orderBy('createdAt'));
 
 // get collection data (simple variant)
 // getDocs(colRef)
