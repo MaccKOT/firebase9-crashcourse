@@ -8,6 +8,10 @@ import {
   addDoc,
   deleteDoc,
   doc,
+  query,
+  where,
+  orderBy,
+  serverTimestamp,
 } from 'firebase/firestore';
 
 // Initialize Firebase
@@ -18,6 +22,13 @@ const db = getFirestore();
 
 // collection ref
 const colRef = collection(db, 'books');
+
+// queries
+const q = query(
+  colRef,
+  where('author', '==', 'Patrick Rothfuss'),
+  orderBy('createdAt')
+);
 
 // get collection data (simple variant)
 // getDocs(colRef)
@@ -40,7 +51,7 @@ const colRef = collection(db, 'books');
 //   });
 
 // real time colletion data (works atomatically after adding or deleting books)
-onSnapshot(colRef, (snapshot) => {
+onSnapshot(q, (snapshot) => {
   let books = [];
   snapshot.docs.forEach((doc) => {
     books.push({
@@ -62,6 +73,7 @@ addBookForm.addEventListener('submit', (e) => {
   addDoc(colRef, {
     title: addBookForm.title.value,
     author: addBookForm.author.value,
+    createdAt: serverTimestamp(),
   }).then(() => {
     // This is async function!
     addBookForm.reset();
