@@ -3,6 +3,7 @@ import { initializeApp } from 'firebase/app';
 import {
   getFirestore,
   collection,
+  getDoc,
   getDocs,
   onSnapshot,
   addDoc,
@@ -60,6 +61,18 @@ onSnapshot(q, (snapshot) => {
 });
 
 console.log('hello from index.js');
+
+// get single document
+const docID = `HO7ry4gZDiY4Ooiwcr74`;
+const docRef = doc(db, 'books', docID);
+getDoc(docRef).then((doc) => {
+  console.log(doc.data(), doc.id);
+});
+
+// subscription to single doc change (same as real time collection subs)
+onSnapshot(docRef, (doc) => {
+  console.log(doc.data(), doc.id);
+});
 
 // adding docs
 const addBookForm = document.querySelector('.add');
