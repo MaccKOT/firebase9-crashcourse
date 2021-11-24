@@ -16,7 +16,13 @@ import {
   updateDoc,
 } from 'firebase/firestore';
 
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signOut,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+} from 'firebase/auth';
 
 // Initialize Firebase
 initializeApp(firebaseConfig);
@@ -64,7 +70,7 @@ onSnapshot(q, (snapshot) => {
   console.log(books);
 });
 
-console.log('hello from index.js');
+// console.log('hello from index.js');
 
 // get single document
 const docID = `HO7ry4gZDiY4Ooiwcr74`;
@@ -136,4 +142,39 @@ signupForm.addEventListener('submit', (e) => {
     .catch((err) => {
       console.log(err.message);
     });
+});
+
+// logging out
+const logoutButton = document.querySelector('.logout');
+logoutButton.addEventListener('click', () => {
+  signOut(auth)
+    .then(() => {
+      console.log('user signed out');
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });
+});
+
+// login
+const loginForm = document.querySelector('.login');
+loginForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  const email = loginForm.email.value;
+  const password = loginForm.password.value;
+
+  signInWithEmailAndPassword(auth, email, password)
+    .then((cred) => {
+      console.log('user logged in:', cred.user);
+      loginForm.reset();
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });
+});
+
+// subscribing to auth changes
+onAuthStateChanged(auth, (user) => {
+  console.log('user status changed:', user);
 });
