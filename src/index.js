@@ -58,7 +58,7 @@ const q = query(colRef, orderBy('createdAt'));
 //   });
 
 // real time colletion data (works atomatically after adding or deleting books)
-onSnapshot(q, (snapshot) => {
+const unsubCol = onSnapshot(q, (snapshot) => {
   let books = [];
   snapshot.docs.forEach((doc) => {
     books.push({
@@ -80,7 +80,7 @@ getDoc(docRef).then((doc) => {
 });
 
 // subscription to single doc change (same as real time collection subs)
-onSnapshot(docRef, (doc) => {
+const unsubDoc = onSnapshot(docRef, (doc) => {
   console.log(doc.data(), doc.id);
 });
 
@@ -175,6 +175,15 @@ loginForm.addEventListener('submit', (e) => {
 });
 
 // subscribing to auth changes
-onAuthStateChanged(auth, (user) => {
+const unsubAuth = onAuthStateChanged(auth, (user) => {
   console.log('user status changed:', user);
+});
+
+// unsubscribing from changes (auth & db)
+const unsubButton = document.querySelector('.unsub');
+unsubButton.addEventListener('click', () => {
+  unsubCol();
+  unsubDoc();
+  unsubAuth();
+  console.log('unsubscribing');
 });
